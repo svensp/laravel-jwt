@@ -23,7 +23,7 @@ class JwtGuard implements Guard
 	 */
 	public function user(): ?Authenticatable
 	{
-		if ($this->hasUser() && !app()->runningUnitTests()) {
+		if ($this->hasUser() && !$this->preventedByUnitTests()) {
 			return $this->user;
 		}
 
@@ -72,5 +72,13 @@ class JwtGuard implements Guard
 		$request = request();
 
 		return $request->bearerToken() ?? $request->token;
+	}
+	
+	private function preventedByUnittests() {
+		return app()->runningUnitTests() && $this->disabledInUnitTests();
+	}
+	
+	private function disabledInUnitTests() {
+		return !config('jwt.tests.enabled', false);
 	}
 }
