@@ -69,12 +69,12 @@ class JwtGuard implements Guard
 
 	private function getTokenFromRequest(): ?string
 	{
+		$request = request();
+		
 		if( !config('jwt.token.from-body', true) ) {
 			return $request->bearerToken();
 		}
 		
-		$request = request();
-
 		return $request->bearerToken() ?? $request->token;
 	}
 	
